@@ -3,3 +3,5 @@
 
 [deploy]
   startCommand = "python bot.py"
+  healthcheck = ""
+  restartPolicyType = "ALWAYS"
