@@ -1,17 +1,16 @@
 """
 Pix Tips & Online Banking Brazil Bot
-100% Informational - No Financial Advice - Telegram Ads Friendly
+Telegram Ads Friendly - No Gambling - No API Keys
 """
 
 import os
-import json
 import logging
 from datetime import datetime
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # ============================================
-# CONFIGURATION
+# LOGGING
 # ============================================
 
 logging.basicConfig(
@@ -65,7 +64,7 @@ PIX_TIPS = {
         },
         {
             "title": "🔥 Pix Garantido",
-            "tip": "Modalidade com garantia de pagamento, ideal para compras online e vendas entre pessoas. Disponível em diversos bancos.",
+            "tip": "Modalidade com garantia de pagamento, ideal para compras online e vendas entre pessoas.",
             "category": "Recursos"
         }
     ],
@@ -77,7 +76,7 @@ PIX_TIPS = {
         },
         {
             "title": "🛡️ Como evitar golpes?",
-            "tip": "⚠️ Desconfie de chaves Pix com nome suspeito\n⚠️ Não faça Pix para desconhecidos\n⚠️ Verifique o valor antes de confirmar\n⚠️ Se tiver dúvida, ligue para o destinatário",
+            "tip": "⚠️ Desconfie de chaves Pix com nome suspeito\n⚠️ Não faça Pix para desconhecidos\n⚠️ Verifique o valor antes de confirmar",
             "category": "Segurança"
         },
         {
@@ -89,48 +88,45 @@ PIX_TIPS = {
 }
 
 ONLINE_BANKING_TIPS = {
-    "melhores_bancos": {
-        "title": "🏦 Melhores Bancos Digitais 2026",
-        "banks": [
-            {
-                "name": "Nubank",
-                "features": "Sem taxas, cartão de crédito, investimentos, Pix ilimitado",
-                "rating": "⭐ 4.8/5"
-            },
-            {
-                "name": "Banco Inter",
-                "features": "Conta digital, investimentos, shopping, Pix, cashback",
-                "rating": "⭐ 4.7/5"
-            },
-            {
-                "name": "Mercado Pago",
-                "features": "Conta para negócios, Pix, cartão, integração com e-commerce",
-                "rating": "⭐ 4.6/5"
-            },
-            {
-                "name": "C6 Bank",
-                "features": "Conta digital, investimentos, cartão com pontos, Pix",
-                "rating": "⭐ 4.5/5"
-            },
-            {
-                "name": "PicPay",
-                "features": "Pagamentos, Pix, cashback, transferências, cartão",
-                "rating": "⭐ 4.4/5"
-            }
-        ]
-    },
+    "melhores_bancos": [
+        {
+            "name": "Nubank",
+            "features": "Sem taxas, cartão de crédito, investimentos, Pix ilimitado",
+            "rating": "⭐ 4.8/5"
+        },
+        {
+            "name": "Banco Inter",
+            "features": "Conta digital, investimentos, shopping, Pix, cashback",
+            "rating": "⭐ 4.7/5"
+        },
+        {
+            "name": "Mercado Pago",
+            "features": "Conta para negócios, Pix, cartão, integração com e-commerce",
+            "rating": "⭐ 4.6/5"
+        },
+        {
+            "name": "C6 Bank",
+            "features": "Conta digital, investimentos, cartão com pontos, Pix",
+            "rating": "⭐ 4.5/5"
+        },
+        {
+            "name": "PicPay",
+            "features": "Pagamentos, Pix, cashback, transferências, cartão",
+            "rating": "⭐ 4.4/5"
+        }
+    ],
     "dicas_bancarias": [
         {
             "title": "💳 Como escolher seu banco digital?",
-            "tip": "✅ Considere taxas e tarifas\n✅ Verifique limites e transferências\n✅ Analise o atendimento\n✅ Compare cartões de crédito\n✅ Veja opções de investimentos"
+            "tip": "✅ Considere taxas e tarifas\n✅ Verifique limites e transferências\n✅ Analise o atendimento\n✅ Compare cartões de crédito"
         },
         {
             "title": "💳 Transferências sem taxas",
-            "tip": "📌 Pix é sempre gratuito\n📌 TED/DOC são gratuitos em muitos bancos\n📌 Use transferências entre contas do mesmo banco\n📌 Consulte seu banco sobre tarifas"
+            "tip": "📌 Pix é sempre gratuito\n📌 TED/DOC são gratuitos em muitos bancos\n📌 Use transferências entre contas do mesmo banco"
         },
         {
             "title": "💳 Economize com bancos digitais",
-            "tip": "💰 Evite tarifas de manutenção\n💰 Prefira bancos com TED/DOC gratuito\n💰 Use Pix para todas as transferências\n💰 Cancele serviços desnecessários"
+            "tip": "💰 Evite tarifas de manutenção\n💰 Prefira bancos com TED/DOC gratuito\n💰 Use Pix para todas as transferências"
         },
         {
             "title": "💳 Como abrir conta digital?",
@@ -140,30 +136,12 @@ ONLINE_BANKING_TIPS = {
 }
 
 PIX_FAQ = [
-    {
-        "question": "❓ Pix funciona 24 horas?",
-        "answer": "Sim! O Pix está disponível 24 horas por dia, 7 dias por semana, incluindo feriados."
-    },
-    {
-        "question": "❓ Qual o limite do Pix?",
-        "answer": "O limite é definido pelo seu banco. Varia entre R$ 1.000 a R$ 10.000 por transação, dependendo do seu perfil."
-    },
-    {
-        "question": "❓ Pix é gratuito?",
-        "answer": "Para pessoas físicas, o Pix é 100% gratuito. Para empresas, alguns bancos podem cobrar tarifas."
-    },
-    {
-        "question": "❓ Como reembolsar um Pix?",
-        "answer": "O Pix é irretratável. Para reembolso, você deve entrar em contato com o destinatário ou usar o MED (Mecanismo Especial de Devolução)."
-    },
-    {
-        "question": "❓ Posso ter várias chaves Pix?",
-        "answer": "Sim! Você pode ter quantas chaves quiser, em diferentes bancos. Cada chave é vinculada a uma conta específica."
-    },
-    {
-        "question": "❓ Pix é seguro?",
-        "answer": "Sim, o Pix utiliza os mais altos padrões de segurança, incluindo criptografia e autenticação em duas etapas."
-    }
+    {"question": "❓ Pix funciona 24 horas?", "answer": "Sim! O Pix está disponível 24 horas por dia, 7 dias por semana, incluindo feriados."},
+    {"question": "❓ Qual o limite do Pix?", "answer": "O limite é definido pelo seu banco. Varia entre R$ 1.000 a R$ 10.000 por transação, dependendo do seu perfil."},
+    {"question": "❓ Pix é gratuito?", "answer": "Para pessoas físicas, o Pix é 100% gratuito. Para empresas, alguns bancos podem cobrar tarifas."},
+    {"question": "❓ Como reembolsar um Pix?", "answer": "O Pix é irretratável. Para reembolso, você deve entrar em contato com o destinatário."},
+    {"question": "❓ Posso ter várias chaves Pix?", "answer": "Sim! Você pode ter quantas chaves quiser, em diferentes bancos."},
+    {"question": "❓ Pix é seguro?", "answer": "Sim, o Pix utiliza os mais altos padrões de segurança, incluindo criptografia e autenticação em duas etapas."}
 ]
 
 SECURITY_ALERTS = [
@@ -201,229 +179,149 @@ Seu guia completo sobre **Pix e Bancos Digitais** no Brasil!
 
 ---
 
-📌 **O que posso ensinar hoje?**
+📌 **Comandos:**
 
-💡 `/pix_basico` - Fundamentos do Pix
-🚀 `/pix_avancado` - Recursos avançados
+💡 `/pix` - Dicas sobre Pix
 🔒 `/seguranca` - Dicas de segurança
 🏦 `/bancos` - Melhores bancos digitais
 ❓ `/faq` - Perguntas frequentes
 🔔 `/alertas` - Alertas de segurança
 📊 `/stats` - Estatísticas
+🆘 `/help` - Ajuda
 
 ---
 
 📢 **100% gratuito | Sem APIs | Conteúdo informativo**
-
-⚠️ *Dicas educacionais - não somos assessoria financeira*
     """
     
     keyboard = [
-        [
-            InlineKeyboardButton("💡 Pix Básico", callback_data='pix_basico'),
-            InlineKeyboardButton("🚀 Pix Avançado", callback_data='pix_avancado')
-        ],
-        [
-            InlineKeyboardButton("🔒 Segurança", callback_data='seguranca'),
-            InlineKeyboardButton("🏦 Bancos Digitais", callback_data='bancos')
-        ],
-        [
-            InlineKeyboardButton("❓ FAQ", callback_data='faq'),
-            InlineKeyboardButton("🔔 Alertas", callback_data='alertas')
-        ],
-        [
-            InlineKeyboardButton("📊 Estatísticas", callback_data='stats'),
-            InlineKeyboardButton("📢 Anunciar", callback_data='advertise')
-        ]
+        [InlineKeyboardButton("💡 Pix", callback_data='pix')],
+        [InlineKeyboardButton("🔒 Segurança", callback_data='seguranca')],
+        [InlineKeyboardButton("🏦 Bancos", callback_data='bancos')],
+        [InlineKeyboardButton("❓ FAQ", callback_data='faq')],
+        [InlineKeyboardButton("📢 Anunciar", callback_data='advertise')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(welcome_text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def pix_basico(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Pix basic tips"""
-    text = "💡 **Pix - O Básico que Você Precisa Saber**\n\n"
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Help command"""
+    text = """
+📖 **Comandos Disponíveis**
+
+💡 `/pix` - Dicas sobre Pix
+🔒 `/seguranca` - Dicas de segurança
+🏦 `/bancos` - Melhores bancos digitais
+❓ `/faq` - Perguntas frequentes
+🔔 `/alertas` - Alertas de segurança
+📊 `/stats` - Estatísticas
+🆘 `/help` - Ajuda
+
+📢 **Anuncie Conosco!**
+Contato: @seu_usuario
+
+✅ **Conteúdo 100% informativo**
+❌ **Sem apostas, sem promessas financeiras**
+    """
+    await update.message.reply_text(text, parse_mode='Markdown')
+
+async def pix_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Pix tips"""
+    text = "💡 **Dicas sobre Pix**\n\n"
     
     for tip in PIX_TIPS['basico']:
-        text += f"**{tip['title']}**\n"
-        text += f"{tip['tip']}\n"
-        text += f"📌 Categoria: {tip['category']}\n\n"
+        text += f"**{tip['title']}**\n{tip['tip']}\n\n"
     
-    text += "📌 *Para mais detalhes, veja as seções avançadas!*"
+    text += "🚀 Para mais dicas, use os botões abaixo!"
     
     keyboard = [
-        [InlineKeyboardButton("🚀 Ver Avançado", callback_data='pix_avancado')],
-        [InlineKeyboardButton("🔒 Ver Segurança", callback_data='seguranca')],
+        [InlineKeyboardButton("🚀 Avançado", callback_data='pix_avancado')],
+        [InlineKeyboardButton("🔒 Segurança", callback_data='seguranca')],
         [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def pix_avancado(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Pix advanced tips"""
-    text = "🚀 **Pix - Recursos Avançados**\n\n"
-    
-    for tip in PIX_TIPS['avancado']:
-        text += f"**{tip['title']}**\n"
-        text += f"{tip['tip']}\n"
-        text += f"📌 Categoria: {tip['category']}\n\n"
-    
-    text += "💡 *Dica: Use os recursos avançados para facilitar seu dia a dia!*"
-    
-    keyboard = [
-        [InlineKeyboardButton("💡 Ver Básico", callback_data='pix_basico')],
-        [InlineKeyboardButton("🔒 Ver Segurança", callback_data='seguranca')],
-        [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
-
-async def seguranca(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def seguranca_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Security tips"""
-    text = "🔒 **Segurança no Pix e Bancos Digitais**\n\n"
-    text += "⚠️ *Proteja seu dinheiro com essas dicas essenciais:*\n\n"
+    text = "🔒 **Dicas de Segurança no Pix**\n\n"
     
     for tip in PIX_TIPS['seguranca']:
-        text += f"**{tip['title']}**\n"
-        text += f"{tip['tip']}\n\n"
+        text += f"**{tip['title']}**\n{tip['tip']}\n\n"
     
-    text += "📱 **Lembre-se:**\n"
-    text += "✅ Banco nunca pede senha por telefone\n"
-    text += "✅ Confirme sempre o destinatário\n"
-    text += "✅ Desconfie de ofertas milagrosas"
+    text += "⚠️ *Sempre verifique os dados antes de pagar!*"
     
     keyboard = [
-        [InlineKeyboardButton("🔔 Ver Alertas", callback_data='alertas')],
+        [InlineKeyboardButton("🔔 Alertas", callback_data='alertas')],
         [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def bancos(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def bancos_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Bank recommendations"""
-    text = "🏦 **Melhores Bancos Digitais do Brasil**\n\n"
-    text += "📊 *Ranking 2026 baseado em avaliações de usuários:*\n\n"
+    text = "🏦 **Melhores Bancos Digitais**\n\n"
     
-    for bank in ONLINE_BANKING_TIPS['melhores_bancos']['banks']:
-        text += f"**{bank['name']}** {bank['rating']}\n"
-        text += f"✅ {bank['features']}\n\n"
-    
-    text += "💡 *Dica: Escolha o banco que melhor atende suas necessidades!*"
+    for bank in ONLINE_BANKING_TIPS['melhores_bancos']:
+        text += f"**{bank['name']}** {bank['rating']}\n✅ {bank['features']}\n\n"
     
     keyboard = [
-        [InlineKeyboardButton("💳 Dicas Bancárias", callback_data='dicas_bancarias')],
+        [InlineKeyboardButton("💳 Dicas", callback_data='dicas_bancarias')],
         [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def dicas_bancarias(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Banking tips"""
-    text = "💳 **Dicas para Bancos Digitais**\n\n"
+async def faq_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """FAQ"""
+    text = "❓ **Perguntas Frequentes**\n\n"
     
-    for tip in ONLINE_BANKING_TIPS['dicas_bancarias']:
-        text += f"**{tip['title']}**\n"
-        text += f"{tip['tip']}\n\n"
-    
-    text += "💰 *Economize dinheiro com essas dicas práticas!*"
+    for item in PIX_FAQ:
+        text += f"**{item['question']}**\n✅ {item['answer']}\n\n"
     
     keyboard = [
-        [InlineKeyboardButton("🏦 Ver Bancos", callback_data='bancos')],
         [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """FAQ section"""
-    text = "❓ **Perguntas Frequentes sobre Pix**\n\n"
-    
-    for item in PIX_FAQ[:5]:
-        text += f"**{item['question']}**\n"
-        text += f"✅ {item['answer']}\n\n"
-    
-    text += "📌 *Tem mais perguntas? Mande sua dúvida para nós!*"
-    
-    keyboard = [
-        [InlineKeyboardButton("📖 Mais FAQ", callback_data='faq_mais')],
-        [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
-
-async def faq_mais(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """More FAQ"""
-    text = "❓ **Mais Perguntas Frequentes**\n\n"
-    
-    for item in PIX_FAQ[5:]:
-        text += f"**{item['question']}**\n"
-        text += f"✅ {item['answer']}\n\n"
-    
-    text += "📱 *Dúvidas? Contate-nos em @pix_tips_brasil*"
-    
-    keyboard = [
-        [InlineKeyboardButton("❓ FAQ Inicial", callback_data='faq')],
-        [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
-
-async def alertas(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def alertas_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Security alerts"""
-    text = "🔔 **Alertas de Segurança - Fique Atento!**\n\n"
-    text += "⚠️ *Golpes e fraudes em destaque:*\n\n"
+    text = "🔔 **Alertas de Segurança**\n\n"
     
     for alert in SECURITY_ALERTS:
         emoji = "🔴" if alert['severity'] == "Alto" else "🟡"
-        text += f"{emoji} **{alert['title']}**\n"
-        text += f"📝 {alert['description']}\n"
-        text += f"📅 {alert['date']} | ⚠️ Severidade: {alert['severity']}\n\n"
-    
-    text += "📢 *Compartilhe esses alertas com amigos e familiares!*"
+        text += f"{emoji} **{alert['title']}**\n📝 {alert['description']}\n📅 {alert['date']}\n\n"
     
     keyboard = [
-        [InlineKeyboardButton("🔒 Dicas de Segurança", callback_data='seguranca')],
+        [InlineKeyboardButton("🔒 Segurança", callback_data='seguranca')],
         [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await update.message.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
 
-async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Statistics"""
     text = """
 📊 **Estatísticas do Pix Tips Brasil**
 
-👥 **Membros:** 1,847
+👥 **Membros:** 1,847+
 📈 **Crescimento mensal:** +15.2%
 💬 **Engajamento:** 9.8%
 
 📱 **Conteúdo mais visto:**
-1️⃣ Segurança - 42% das visualizações
-2️⃣ Pix Básico - 30% das visualizações
-3️⃣ Bancos Digitais - 18% das visualizações
-4️⃣ Dicas Avançadas - 10% das visualizações
-
-📅 **Postagens esta semana:** 12
-🔥 **Melhor dia:** Quarta-feira
-
-🎯 **Público-alvo:**
-• 75% Brasil
-• 15% Portugal
-• 10% Outros
-• 60% Homens | 40% Mulheres
-• Idade: 18-45 anos
+1️⃣ Segurança - 42%
+2️⃣ Pix Básico - 30%
+3️⃣ Bancos Digitais - 18%
 
 📢 **Anuncie aqui!** 
-Alcance mais de 1.800 pessoas diariamente.
-*Contato: @pix_tips_brasil*
+Contato: @seu_usuario
     """
     
     keyboard = [
@@ -446,17 +344,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     if query.data == 'home':
         await start(update, context)
     
-    elif query.data == 'pix_basico':
-        # Simulate command with message
-        await query.edit_message_text("💡 **Carregando Pix Básico...**", parse_mode='Markdown')
-        # Need to handle differently since we're in callback
-        # We'll recreate the content here
-        text = "💡 **Pix - O Básico que Você Precisa Saber**\n\n"
+    elif query.data == 'pix':
+        text = "💡 **Dicas sobre Pix**\n\n"
         for tip in PIX_TIPS['basico']:
-            text += f"**{tip['title']}**\n{tip['tip']}\n📌 Categoria: {tip['category']}\n\n"
+            text += f"**{tip['title']}**\n{tip['tip']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("🚀 Ver Avançado", callback_data='pix_avancado')],
-            [InlineKeyboardButton("🔒 Ver Segurança", callback_data='seguranca')],
+            [InlineKeyboardButton("🚀 Avançado", callback_data='pix_avancado')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
@@ -464,30 +357,29 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     elif query.data == 'pix_avancado':
         text = "🚀 **Pix - Recursos Avançados**\n\n"
         for tip in PIX_TIPS['avancado']:
-            text += f"**{tip['title']}**\n{tip['tip']}\n📌 Categoria: {tip['category']}\n\n"
+            text += f"**{tip['title']}**\n{tip['tip']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("💡 Ver Básico", callback_data='pix_basico')],
-            [InlineKeyboardButton("🔒 Ver Segurança", callback_data='seguranca')],
+            [InlineKeyboardButton("💡 Pix", callback_data='pix')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'seguranca':
-        text = "🔒 **Segurança no Pix e Bancos Digitais**\n\n⚠️ *Proteja seu dinheiro:*\n\n"
+        text = "🔒 **Dicas de Segurança**\n\n"
         for tip in PIX_TIPS['seguranca']:
             text += f"**{tip['title']}**\n{tip['tip']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("🔔 Ver Alertas", callback_data='alertas')],
+            [InlineKeyboardButton("🔔 Alertas", callback_data='alertas')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'bancos':
-        text = "🏦 **Melhores Bancos Digitais do Brasil**\n\n📊 Ranking 2026:\n\n"
-        for bank in ONLINE_BANKING_TIPS['melhores_bancos']['banks']:
+        text = "🏦 **Melhores Bancos Digitais**\n\n"
+        for bank in ONLINE_BANKING_TIPS['melhores_bancos']:
             text += f"**{bank['name']}** {bank['rating']}\n✅ {bank['features']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("💳 Dicas Bancárias", callback_data='dicas_bancarias')],
+            [InlineKeyboardButton("💳 Dicas", callback_data='dicas_bancarias')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
@@ -497,38 +389,27 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         for tip in ONLINE_BANKING_TIPS['dicas_bancarias']:
             text += f"**{tip['title']}**\n{tip['tip']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("🏦 Ver Bancos", callback_data='bancos')],
+            [InlineKeyboardButton("🏦 Bancos", callback_data='bancos')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'faq':
-        text = "❓ **Perguntas Frequentes sobre Pix**\n\n"
-        for item in PIX_FAQ[:5]:
+        text = "❓ **Perguntas Frequentes**\n\n"
+        for item in PIX_FAQ:
             text += f"**{item['question']}**\n✅ {item['answer']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("📖 Mais FAQ", callback_data='faq_mais')],
-            [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
-        ]
-        await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
-    
-    elif query.data == 'faq_mais':
-        text = "❓ **Mais Perguntas Frequentes**\n\n"
-        for item in PIX_FAQ[5:]:
-            text += f"**{item['question']}**\n✅ {item['answer']}\n\n"
-        keyboard = [
-            [InlineKeyboardButton("❓ FAQ Inicial", callback_data='faq')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'alertas':
-        text = "🔔 **Alertas de Segurança**\n\n⚠️ Golpes e fraudes:\n\n"
+        text = "🔔 **Alertas de Segurança**\n\n"
         for alert in SECURITY_ALERTS:
             emoji = "🔴" if alert['severity'] == "Alto" else "🟡"
             text += f"{emoji} **{alert['title']}**\n📝 {alert['description']}\n📅 {alert['date']}\n\n"
         keyboard = [
-            [InlineKeyboardButton("🔒 Dicas de Segurança", callback_data='seguranca')],
+            [InlineKeyboardButton("🔒 Segurança", callback_data='seguranca')],
             [InlineKeyboardButton("🏠 Voltar", callback_data='home')]
         ]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
@@ -537,17 +418,12 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         text = """
 📊 **Estatísticas do Pix Tips Brasil**
 
-👥 **Membros:** 1,847
+👥 **Membros:** 1,847+
 📈 **Crescimento mensal:** +15.2%
 💬 **Engajamento:** 9.8%
 
-📱 **Conteúdo mais visto:**
-1️⃣ Segurança - 42%
-2️⃣ Pix Básico - 30%
-3️⃣ Bancos Digitais - 18%
-
 📢 **Anuncie aqui!** 
-Contato: @pix_tips_brasil
+Contato: @seu_usuario
         """
         keyboard = [
             [InlineKeyboardButton("📢 Anunciar", callback_data='advertise')],
@@ -560,53 +436,22 @@ Contato: @pix_tips_brasil
 📢 **Anuncie no Pix Tips Brasil!**
 
 ✅ **Vantagens:**
-• Alcance: +1.847 membros ativos
+• Alcance: +1.800 membros ativos
 • Segmentação: Brasil (75%)
 • Engajamento: 9.8%
-• Conteúdo: Pix, bancos, finanças
 
 💰 **Pacotes:**
-• 📝 Post informativo: R$ 50
+• 📝 Post patrocinado: R$ 50
 • ⭐ Post + destaque: R$ 100
-• 📅 5 posts/mês: R$ 300
-• 🏆 15 posts/mês: R$ 800
+• 📅 Mensal (5 posts): R$ 300
 
-📊 **Público:**
-• 60% Homens | 40% Mulheres
-• Idade: 18-45 anos
-• Interesse: Finanças digitais
-
-📩 **Contato:** @pix_tips_brasil
+📩 **Contato:** @seu_usuario
         """
         await query.edit_message_text(text, parse_mode='Markdown')
 
 # ============================================
-# HELPERS & ERROR HANDLERS
+# ERROR HANDLER
 # ============================================
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Help command"""
-    text = """
-📖 **Comandos Disponíveis**
-
-💡 `/pix_basico` - Fundamentos do Pix
-🚀 `/pix_avancado` - Recursos avançados
-🔒 `/seguranca` - Dicas de segurança
-🏦 `/bancos` - Melhores bancos digitais
-❓ `/faq` - Perguntas frequentes
-🔔 `/alertas` - Alertas de segurança
-📊 `/stats` - Estatísticas do canal
-ℹ️ `/start` - Menu principal
-🆘 `/help` - Mostra esta mensagem
-
-📢 **Anuncie Conosco!**
-Alcance +1.800 pessoas diariamente.
-Contato: @pix_tips_brasil
-
-✅ **Conteúdo 100% informativo**
-❌ **Sem apostas, sem promessas financeiras**
-    """
-    await update.message.reply_text(text, parse_mode='Markdown')
 
 async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Log errors"""
@@ -621,30 +466,40 @@ def main() -> None:
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     
     if not token:
-        logger.error("No TELEGRAM_BOT_TOKEN found in environment!")
+        logger.error("❌ No TELEGRAM_BOT_TOKEN found in environment variables!")
+        logger.error("Please set: railway variables set TELEGRAM_BOT_TOKEN=your_token")
         return
     
-    application = Application.builder().token(token).build()
-    
-    # Add command handlers
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("pix_basico", pix_basico))
-    application.add_handler(CommandHandler("pix_avancado", pix_avancado))
-    application.add_handler(CommandHandler("seguranca", seguranca))
-    application.add_handler(CommandHandler("bancos", bancos))
-    application.add_handler(CommandHandler("faq", faq))
-    application.add_handler(CommandHandler("alertas", alertas))
-    application.add_handler(CommandHandler("stats", stats))
-    
-    # Add callback handler
-    application.add_handler(CallbackQueryHandler(button_callback))
-    
-    # Add error handler
-    application.add_error_handler(error_handler)
-    
     logger.info("🚀 Pix Tips Brasil bot is starting...")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    logger.info(f"Using token: {token[:10]}...")
+    
+    try:
+        application = Application.builder().token(token).build()
+        
+        # Add command handlers
+        application.add_handler(CommandHandler("start", start))
+        application.add_handler(CommandHandler("help", help_command))
+        application.add_handler(CommandHandler("pix", pix_command))
+        application.add_handler(CommandHandler("seguranca", seguranca_command))
+        application.add_handler(CommandHandler("bancos", bancos_command))
+        application.add_handler(CommandHandler("faq", faq_command))
+        application.add_handler(CommandHandler("alertas", alertas_command))
+        application.add_handler(CommandHandler("stats", stats_command))
+        
+        # Add callback handler
+        application.add_handler(CallbackQueryHandler(button_callback))
+        
+        # Add error handler
+        application.add_error_handler(error_handler)
+        
+        # Start polling
+        logger.info("✅ Bot is running! Press Ctrl+C to stop.")
+        application.run_polling(allowed_updates=Update.ALL_TYPES)
+        
+    except Exception as e:
+        logger.error(f"❌ Error starting bot: {e}")
+        raise
 
 if __name__ == '__main__':
     main()
+  
