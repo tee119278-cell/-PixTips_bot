@@ -1,6 +1,3 @@
-"""
-Pix Tips Brasil - Fixed for Railway
-"""
 import os
 import sys
 import logging
@@ -54,7 +51,6 @@ ALERTS = [
 # ==================== HANDLERS ====================
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Welcome message"""
     user = update.effective_user
     text = f"""
 👋 Olá {user.first_name}! Bem-vindo ao **Pix Tips Brasil** 🏦
@@ -90,52 +86,41 @@ Seu guia completo sobre **Pix e Bancos Digitais**!
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def pix(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Pix tips"""
     text = "💡 **Dicas sobre Pix:**\n\n"
     for tip in PIX_TIPS['basic']:
         text += f"{tip}\n\n"
-    
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def seguranca(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Security tips"""
     text = "🔒 **Dicas de Segurança:**\n\n"
     for tip in PIX_TIPS['security']:
         text += f"{tip}\n\n"
-    
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def bancos(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Bank recommendations"""
     text = "🏦 **Melhores Bancos Digitais:**\n\n"
     for bank in PIX_TIPS['banks']:
         text += f"{bank}\n\n"
-    
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """FAQ"""
     text = "❓ **Perguntas Frequentes:**\n\n"
     for q, a in FAQ:
         text += f"{q}\n{a}\n\n"
-    
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def alertas(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Alerts"""
     text = "🔔 **Alertas de Segurança:**\n\n"
     for alert in ALERTS:
         text += f"{alert}\n\n"
-    
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Statistics"""
     text = """
 📊 **Estatísticas do Pix Tips Brasil**
 
@@ -151,12 +136,10 @@ async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
 📢 **Anuncie aqui!** 
 Contato: @seu_usuario
     """
-    
     keyboard = [[InlineKeyboardButton("📢 Anunciar", callback_data='ad')]]
     await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Help"""
     text = """
 📖 **Comandos Disponíveis:**
 
@@ -173,13 +156,11 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 📢 **Anuncie:** @seu_usuario
     """
-    
     await update.message.reply_text(text, parse_mode='Markdown')
 
 # ==================== CALLBACK ====================
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handle button presses"""
     query = update.callback_query
     await query.answer()
     
@@ -235,23 +216,25 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ==================== MAIN ====================
 
 def main():
-    """Start the bot"""
     # Get token from environment
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     
     if not token:
         logger.error("❌ TELEGRAM_BOT_TOKEN not found in environment variables!")
-        logger.error("Please set: railway variables set TELEGRAM_BOT_TOKEN=your_token")
+        logger.error("🔑 Please set it in Railway:")
+        logger.error("   1. Go to railway.app/dashboard")
+        logger.error("   2. Click on your project")
+        logger.error("   3. Click 'Variables' tab")
+        logger.error("   4. Add: TELEGRAM_BOT_TOKEN = your_token_here")
+        logger.error("   5. Click 'Deploy'")
         sys.exit(1)
     
     logger.info("🚀 Starting Pix Tips Brasil bot...")
-    logger.info(f"✓ Token found: {token[:10]}...")
+    logger.info(f"✓ Token found: {token[:15]}...")
     
     try:
-        # Create application
         app = Application.builder().token(token).build()
         
-        # Add command handlers
         app.add_handler(CommandHandler("start", start))
         app.add_handler(CommandHandler("pix", pix))
         app.add_handler(CommandHandler("seguranca", seguranca))
@@ -260,11 +243,8 @@ def main():
         app.add_handler(CommandHandler("alertas", alertas))
         app.add_handler(CommandHandler("stats", stats))
         app.add_handler(CommandHandler("help", help))
-        
-        # Add callback handler
         app.add_handler(CallbackQueryHandler(button_callback))
         
-        # Start the bot
         logger.info("✅ Bot is running! Waiting for messages...")
         app.run_polling(allowed_updates=Update.ALL_TYPES)
         
