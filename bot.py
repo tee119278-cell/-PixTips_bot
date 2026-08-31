@@ -1,20 +1,13 @@
-"""
-Pix Tips Brasil - Simple Telegram Bot
-No API Keys Required - Telegram Ads Friendly
-"""
-
 import os
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# ==================== DATA ====================
-
-PIX_DATA = {
+# Data
+PIX_TIPS = {
     'basic': [
         '💡 Pix é um sistema de pagamentos instantâneos do Banco Central',
         '💡 Você pode criar chaves usando CPF, email, celular ou chave aleatória',
@@ -44,8 +37,6 @@ ALERTS = [
     '🚨 Golpe: Phishing pedindo sua chave Pix'
 ]
 
-# ==================== COMMANDS ====================
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     text = f"""
@@ -74,7 +65,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def pix(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "💡 **Dicas sobre Pix:**\n\n"
-    for tip in PIX_DATA['basic']:
+    for tip in PIX_TIPS['basic']:
         text += f"{tip}\n\n"
     
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
@@ -82,7 +73,7 @@ async def pix(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def seguranca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "🔒 **Dicas de Segurança:**\n\n"
-    for tip in PIX_DATA['security']:
+    for tip in PIX_TIPS['security']:
         text += f"{tip}\n\n"
     
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
@@ -90,7 +81,7 @@ async def seguranca(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def bancos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = "🏦 **Melhores Bancos Digitais:**\n\n"
-    for bank in PIX_DATA['banks']:
+    for bank in PIX_TIPS['banks']:
         text += f"{bank}\n\n"
     
     keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
@@ -145,8 +136,6 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     await update.message.reply_text(text, parse_mode='Markdown')
 
-# ==================== CALLBACKS ====================
-
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -156,21 +145,21 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     elif query.data == 'pix':
         text = "💡 **Dicas sobre Pix:**\n\n"
-        for tip in PIX_DATA['basic']:
+        for tip in PIX_TIPS['basic']:
             text += f"{tip}\n\n"
         keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'seguranca':
         text = "🔒 **Dicas de Segurança:**\n\n"
-        for tip in PIX_DATA['security']:
+        for tip in PIX_TIPS['security']:
             text += f"{tip}\n\n"
         keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
     
     elif query.data == 'bancos':
         text = "🏦 **Melhores Bancos Digitais:**\n\n"
-        for bank in PIX_DATA['banks']:
+        for bank in PIX_TIPS['banks']:
             text += f"{bank}\n\n"
         keyboard = [[InlineKeyboardButton("🏠 Voltar", callback_data='home')]]
         await query.edit_message_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
@@ -188,8 +177,6 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         """
         await query.edit_message_text(text, parse_mode='Markdown')
 
-# ==================== MAIN ====================
-
 def main():
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     
@@ -197,11 +184,10 @@ def main():
         logger.error("❌ TELEGRAM_BOT_TOKEN not found!")
         return
     
-    logger.info("🚀 Starting bot...")
+    logger.info("🚀 Starting Pix Tips Brasil bot...")
     
     app = Application.builder().token(token).build()
     
-    # Commands
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("pix", pix))
     app.add_handler(CommandHandler("seguranca", seguranca))
@@ -210,11 +196,8 @@ def main():
     app.add_handler(CommandHandler("alertas", alertas))
     app.add_handler(CommandHandler("stats", stats))
     app.add_handler(CommandHandler("help", help))
-    
-    # Callbacks
     app.add_handler(CallbackQueryHandler(button_callback))
     
-    # Start
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
